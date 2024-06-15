@@ -8,8 +8,12 @@
         <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugSymbols>False</DebugSymbols>
+        <DebugType>None</DebugType>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="System.Text.Json" Version="8.0.3" />
     </ItemGroup>
-
 </Project>
