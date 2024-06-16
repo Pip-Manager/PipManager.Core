@@ -9,7 +9,7 @@ namespace PipManager.Core.PyEnvironment;
 
 public static class Detector
 {
-    public static Response<List<EnvironmentModel>> ByEnvironmentVariable()
+    public static List<EnvironmentModel>? ByEnvironmentVariable()
     {
         var environmentItems = new List<EnvironmentModel>();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -26,26 +26,26 @@ public static class Detector
         }
         else
         {
-            return new Response<List<EnvironmentModel>>([], ResponseMessageType.OsNotSupported);
+            throw new PlatformNotSupportedException("OS is not supported.");
         }
-        return new Response<List<EnvironmentModel>>(environmentItems, ResponseMessageType.Success);
+        return environmentItems;
     }
     
-    public static Response<EnvironmentModel?> ByPythonPath(string pythonPath)
+    public static EnvironmentModel? ByPythonPath(string pythonPath)
     {
         if (!File.Exists(pythonPath))
         {
-            return new Response<EnvironmentModel?>(null, ResponseMessageType.Error, "Python path does not exist");
+            throw new FileNotFoundException("Python path is not found.");
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return new Response<EnvironmentModel?>(WindowsSpecified.GetEnvironment(pythonPath), ResponseMessageType.Success);
+            return WindowsSpecified.GetEnvironment(pythonPath);
         }
         if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            return new Response<EnvironmentModel?>(UnixSpecified.GetEnvironment(pythonPath), ResponseMessageType.Success);
+            return UnixSpecified.GetEnvironment(pythonPath);
         }
-        return new Response<EnvironmentModel?>(null, ResponseMessageType.OsNotSupported);
+        throw new PlatformNotSupportedException("OS is not supported.");
     }
 }

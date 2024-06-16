@@ -6,17 +6,17 @@ namespace PipManager.Core.PyEnvironment;
 
 public static class Search
 {
-    public static Response<EnvironmentModel?> FindEnvironmentByIdentifier(string identifier)
+    public static EnvironmentModel? FindEnvironmentByIdentifier(string identifier)
     {
         var environments = AppConfig!.Environments;
         var environment = environments.FirstOrDefault(x => x.Identifier == identifier);
-        return environment == null ? new Response<EnvironmentModel?>(null, ResponseMessageType.Error) : new Response<EnvironmentModel?>(environment, ResponseMessageType.Success);
+        return environment;
     }
     
-    public static Response<EnvironmentModel?> FindEnvironmentByPythonPath(string pythonPath)
+    public static EnvironmentModel? FindEnvironmentByPythonPath(string pythonPath)
     {
         var environments = AppConfig!.Environments;
         var environment = environments.FirstOrDefault(x => x.PythonPath == pythonPath);
-        return environment == null ? new Response<EnvironmentModel?>(null, ResponseMessageType.Error) : new Response<EnvironmentModel?>(environment, ResponseMessageType.Success);
+        return environment;
     }
 }
