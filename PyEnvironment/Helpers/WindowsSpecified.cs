@@ -5,36 +5,28 @@ using PipManager.Core.Configuration.Models.Common;
 
 namespace PipManager.Core.PyEnvironment.Helpers;
 
+
+[SupportedOSPlatform("Windows")]
 public static partial class WindowsSpecified
 {
-    [SupportedOSPlatform("Windows")]
     public static EnvironmentModel? GetEnvironment(string pythonPath)
     {
         var pythonVersion = FileVersionInfo.GetVersionInfo(pythonPath).FileVersion!;
-        var pythonDirectory = Directory.GetParent(pythonPath)!.FullName;
-        var pipDirectory = GetPipDirectories(pythonDirectory);
+        var pipDirectory = GetPackageDirectory(Directory.GetParent(pythonPath)!.FullName);
 
         if (pipDirectory == null)
         {
             return null;
         }
-
-        var pipVersion = GetPipVersionInInitFile().Match(File.ReadAllText(Path.Combine(pipDirectory, "__init__.py"))).Groups[1].Value;
-        return new EnvironmentModel { Identifier = "", PipVersion = pipVersion, PythonPath = pythonDirectory, PythonVersion = pythonVersion};
+        
+        pipDirectory = Path.Combine(pipDirectory, "pip");
+        var pipVersion = Common.GetPipVersionInInitFile().Match(File.ReadAllText(Path.Combine(pipDirectory, "__init__.py"))).Groups[1].Value;
+        return new EnvironmentModel { Identifier = "", PipVersion = pipVersion, PythonPath = pythonPath, PythonVersion = pythonVersion};
     }
     
-    private static string? GetPipDirectories(string pythonDirectory)
+    private static string? GetPackageDirectory(string pythonDirectory)
     {
         var sitePackageDirectory = Path.Combine(pythonDirectory, @"Lib\site-packages");
-        if (!Directory.Exists(sitePackageDirectory))
-        {
-            return null;
-        }
-
-        var pipDirectory = Path.Combine(sitePackageDirectory, "pip");
-        return !Directory.Exists(pipDirectory) ? null : pipDirectory;
+        return !Directory.Exists(sitePackageDirectory) ? null : sitePackageDirectory;
     }
-    
-    [GeneratedRegex("__version__ = \"(.*?)\"", RegexOptions.IgnoreCase, "zh-CN")]
-    private static partial Regex GetPipVersionInInitFile();
 }

@@ -26,8 +26,26 @@ public static class Detector
         }
         else
         {
-            return new Response<List<EnvironmentModel>>([], ResponseMessageType.Error);
+            return new Response<List<EnvironmentModel>>([], ResponseMessageType.OsNotSupported);
         }
         return new Response<List<EnvironmentModel>>(environmentItems, ResponseMessageType.Success);
+    }
+    
+    public static Response<EnvironmentModel?> ByPythonPath(string pythonPath)
+    {
+        if (!File.Exists(pythonPath))
+        {
+            return new Response<EnvironmentModel?>(null, ResponseMessageType.Error, "Python path does not exist");
+        }
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return new Response<EnvironmentModel?>(WindowsSpecified.GetEnvironment(pythonPath), ResponseMessageType.Success);
+        }
+        if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            return new Response<EnvironmentModel?>(UnixSpecified.GetEnvironment(pythonPath), ResponseMessageType.Success);
+        }
+        return new Response<EnvironmentModel?>(null, ResponseMessageType.OsNotSupported);
     }
 }
