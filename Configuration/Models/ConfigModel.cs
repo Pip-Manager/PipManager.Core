@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using PipManager.Core.Configuration.Models.Common;
 
-namespace PipManager.Core.Configuration.Models.Cli;
+namespace PipManager.Core.Configuration.Models;
 
 [JsonSerializable(typeof(ConfigModel))]
 public partial class CliConfigModelContext : JsonSerializerContext;

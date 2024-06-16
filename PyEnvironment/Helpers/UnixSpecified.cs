@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
 using System.Text;
-using PipManager.Core.Configuration.Models.Common;
+using PipManager.Core.Configuration.Models;
 
 namespace PipManager.Core.PyEnvironment.Helpers;
 

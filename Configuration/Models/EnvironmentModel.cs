@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PipManager.Core.Configuration.Models.Common;
+namespace PipManager.Core.Configuration.Models;
 
 [JsonSerializable(typeof(EnvironmentModel))]
 public partial class EnvironmentModelContext : JsonSerializerContext;

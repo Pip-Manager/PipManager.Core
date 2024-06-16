@@ -1,4 +1,4 @@
-﻿using PipManager.Core.Configuration.Models.Common;
+﻿using PipManager.Core.Configuration.Models;
 using PipManager.Core.Enums;
 using static PipManager.Core.Configuration.Configuration;
 

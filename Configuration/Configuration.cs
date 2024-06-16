@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
-using PipManager.Core.Configuration.Models.Cli;
+using PipManager.Core.Configuration.Models;
+using CliConfigModelContext = PipManager.Core.Configuration.Models.CliConfigModelContext;
 
 namespace PipManager.Core.Configuration;
 

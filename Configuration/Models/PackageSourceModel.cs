@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using PipManager.Core.Enums;
 
-namespace PipManager.Core.Configuration.Models.Common;
+namespace PipManager.Core.Configuration.Models;
 
 [JsonSerializable(typeof(PackageSourceModel))]
 public partial class PackageSourceModelContext : JsonSerializerContext;

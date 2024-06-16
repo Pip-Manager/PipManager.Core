@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using PipManager.Core.Configuration.Models.Common;
+using PipManager.Core.Configuration.Models;
 using PipManager.Core.Enums;
 using PipManager.Core.PyEnvironment.Helpers;
 
