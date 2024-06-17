@@ -1,4 +1,5 @@
-﻿using PipManager.Core.Configuration.Models;
+﻿using PipManager.Cli.Extensions;
+using PipManager.Core.Configuration.Models;
 using PipManager.Core.Enums;
 using static PipManager.Core.Configuration.Configuration;
 
@@ -16,7 +17,7 @@ public static class Search
     public static EnvironmentModel? FindEnvironmentByPythonPath(string pythonPath)
     {
         var environments = AppConfig!.Environments;
-        var environment = environments.FirstOrDefault(x => x.PythonPath == pythonPath);
+        var environment = environments.FirstOrDefault(x => pythonPath.PathEquals(x.PythonPath));
         return environment;
     }
 }

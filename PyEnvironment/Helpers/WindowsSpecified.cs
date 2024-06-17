@@ -9,14 +9,14 @@ namespace PipManager.Core.PyEnvironment.Helpers;
 [SupportedOSPlatform("Windows")]
 public static partial class WindowsSpecified
 {
-    public static EnvironmentModel? GetEnvironment(string pythonPath)
+    public static EnvironmentModel GetEnvironment(string pythonPath)
     {
         var pythonVersion = FileVersionInfo.GetVersionInfo(pythonPath).FileVersion!;
         var pipDirectory = GetPackageDirectory(Directory.GetParent(pythonPath)!.FullName);
 
-        if (pipDirectory == null)
+        if (pipDirectory is null)
         {
-            return null;
+            throw new DirectoryNotFoundException($"Pip directory not found in {pythonPath}");
         }
         
         pipDirectory = Path.Combine(pipDirectory, "pip");
@@ -24,9 +24,13 @@ public static partial class WindowsSpecified
         return new EnvironmentModel { Identifier = "", PipVersion = pipVersion, PythonPath = pythonPath, PythonVersion = pythonVersion};
     }
     
-    private static string? GetPackageDirectory(string pythonDirectory)
+    private static string GetPackageDirectory(string pythonDirectory)
     {
         var sitePackageDirectory = Path.Combine(pythonDirectory, @"Lib\site-packages");
-        return !Directory.Exists(sitePackageDirectory) ? null : sitePackageDirectory;
+        if (!Directory.Exists(sitePackageDirectory))
+        {
+            throw new DirectoryNotFoundException($"Package directory not found in {pythonDirectory}");
+        }
+        return sitePackageDirectory;
     }
 }

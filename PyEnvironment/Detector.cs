@@ -9,7 +9,7 @@ namespace PipManager.Core.PyEnvironment;
 
 public static class Detector
 {
-    public static List<EnvironmentModel>? ByEnvironmentVariable()
+    public static List<EnvironmentModel> ByEnvironmentVariable()
     {
         var environmentItems = new List<EnvironmentModel>();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -31,7 +31,7 @@ public static class Detector
         return environmentItems;
     }
     
-    public static EnvironmentModel? ByPythonPath(string pythonPath)
+    public static EnvironmentModel ByPythonPath(string pythonPath)
     {
         if (!File.Exists(pythonPath))
         {

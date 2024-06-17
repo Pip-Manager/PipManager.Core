@@ -10,21 +10,21 @@ namespace PipManager.Core.PyEnvironment.Helpers;
 [SupportedOSPlatform("OSX")]
 public class UnixSpecified
 {
-    public static EnvironmentModel? GetEnvironment(string pythonPath)
+    public static EnvironmentModel GetEnvironment(string pythonPath)
     {
         var pythonVersion = FileVersionInfo.GetVersionInfo(pythonPath).FileVersion!;
         var pipDirectory = GetPackageDirectory(pythonPath);
 
         if (pipDirectory == null)
         {
-            return null;
+            throw new DirectoryNotFoundException($"Pip directory not found in {pythonPath}");
         }
         pipDirectory = Path.Combine(pipDirectory, "pip");
         var pipVersion = Common.GetPipVersionInInitFile().Match(File.ReadAllText(Path.Combine(pipDirectory, "__init__.py"))).Groups[1].Value;
         return new EnvironmentModel { Identifier = "", PipVersion = pipVersion, PythonPath = pythonPath, PythonVersion = pythonVersion};
     }
     
-    private static string? GetPackageDirectory(string pythonPath)
+    private static string GetPackageDirectory(string pythonPath)
     {
         var process = new Process();
         process.StartInfo.FileName = pythonPath;
@@ -51,6 +51,6 @@ public class UnixSpecified
         process.WaitForExit();
 
         return output.ToString().Split('\n')[1..^2].Select(item => item.Trim()[1..^2]).Reverse()
-            .FirstOrDefault(path => path.EndsWith("site-packages") || path.EndsWith("dist-packages"));
+            .FirstOrDefault(path => path.EndsWith("site-packages") || path.EndsWith("dist-packages")) ?? throw new DirectoryNotFoundException($"Package directory not found in {pythonPath}");
     }
 }
