@@ -12,5 +12,5 @@ public class ConfigModel
     [JsonPropertyName("environments")]
     public List<EnvironmentModel> Environments { get; set; } = [];
     [JsonPropertyName("packageSource")]
-    public PackageSourceModel PackageSource { get; set; } = new();
+    public string PackageSource { get; set; } = "default";
 }

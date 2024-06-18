@@ -20,7 +20,10 @@ public static class Detector
                 if (!File.Exists(Path.Combine(item, "python.exe")))
                     continue;
                 var environmentItem = WindowsSpecified.GetEnvironment(Path.Combine(item, "python.exe"));
-                if (environmentItem == null) continue;
+                if (environmentItem == null)
+                {
+                    continue;
+                }
                 environmentItems.Add(environmentItem);
             }
         }
@@ -31,7 +34,7 @@ public static class Detector
         return environmentItems;
     }
     
-    public static EnvironmentModel ByPythonPath(string pythonPath)
+    public static EnvironmentModel? ByPythonPath(string pythonPath)
     {
         if (!File.Exists(pythonPath))
         {

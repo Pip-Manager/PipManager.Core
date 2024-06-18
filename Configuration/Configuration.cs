@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.ObjectModel;
+using System.Text.Json;
 using PipManager.Core.Configuration.Models;
 using CliConfigModelContext = PipManager.Core.Configuration.Models.CliConfigModelContext;
 
@@ -39,4 +40,10 @@ public static class Configuration
     {
         File.WriteAllText(ConfigPath, JsonSerializer.Serialize(AppConfig, typeof(ConfigModel), SerializerOptions));
     }
+    
+    public static readonly ReadOnlyDictionary<string, string> PackageSources = new(new Dictionary<string, string>
+    {
+        ["default"] = "https://pypi.org/simple",
+        ["tsinghua"] = "https://pypi.tuna.tsinghua.edu.cn/simple"
+    });
 }
