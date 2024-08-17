@@ -1,6 +1,5 @@
-﻿using PipManager.Cli.Extensions;
-using PipManager.Core.Configuration.Models;
-using PipManager.Core.Enums;
+﻿using PipManager.Core.Configuration.Models;
+using PipManager.Core.Extensions;
 using static PipManager.Core.Configuration.Configuration;
 
 namespace PipManager.Core.PyEnvironment;
