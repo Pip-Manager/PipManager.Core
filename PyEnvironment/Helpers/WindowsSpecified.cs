@@ -1,13 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
-using System.Text.RegularExpressions;
 using PipManager.Core.Configuration.Models;
 
 namespace PipManager.Core.PyEnvironment.Helpers;
 
 
 [SupportedOSPlatform("Windows")]
-public static partial class WindowsSpecified
+public static class WindowsSpecified
 {
     public static EnvironmentModel? GetEnvironment(string pythonPath)
     {

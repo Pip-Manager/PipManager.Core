@@ -1,4 +1,4 @@
-﻿namespace PipManager.Cli.Extensions;
+﻿namespace PipManager.Core.Extensions;
 
 public static class PathExtension
 {
