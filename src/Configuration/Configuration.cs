@@ -8,7 +8,7 @@ namespace PipManager.Core.Configuration;
 
 public static class Configuration
 {
-    private static readonly string DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PipManager");
+    public static readonly string DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PipManager");
     public static readonly string ConfigPath = Path.Combine(DataFolder, "config.json");
     
     private static readonly JsonSerializerOptions SerializerOptions = new()
@@ -58,6 +58,8 @@ public static class Configuration
     public static readonly ReadOnlyDictionary<string, string> PackageSources = new(new Dictionary<string, string>
     {
         ["default"] = "https://pypi.org/simple",
-        ["tsinghua"] = "https://pypi.tuna.tsinghua.edu.cn/simple"
+        ["tsinghua"] = "https://pypi.tuna.tsinghua.edu.cn/simple",
+        ["aliyun"] = "https://mirrors.aliyun.com/pypi/simple",
+        ["douban"] = "https://pypi.doubanio.com/simple"
     });
 }

@@ -12,5 +12,7 @@ public class ConfigModel
     [JsonPropertyName("environments")]
     public List<EnvironmentModel> Environments { get; set; } = [];
     [JsonPropertyName("packageSource")]
-    public string PackageSource { get; set; } = "default";
+    public PackageSourceModel PackageSource { get; set; } = new();
+    [JsonPropertyName("personalization")]  // UI-based App Configuration
+    public PersonalizationModel Personalization { get; set; } = new();
 }
