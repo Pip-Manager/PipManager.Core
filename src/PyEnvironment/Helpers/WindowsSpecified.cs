@@ -28,4 +28,84 @@ public static class WindowsSpecified
         var sitePackageDirectory = Path.Combine(pythonDirectory, @"Lib\site-packages");
         return !Directory.Exists(sitePackageDirectory) ? null : sitePackageDirectory;
     }
+
+    public static EnvironmentModel? GetEnvironmentByCommand(string command, string arguments)
+    {
+         var proc = new Process
+         {
+             StartInfo = new ProcessStartInfo
+             {
+                 FileName = command,
+                 Arguments = arguments,
+                 UseShellExecute = false,
+                 RedirectStandardOutput = true,
+                 CreateNoWindow = true,
+                 WindowStyle = ProcessWindowStyle.Hidden
+             }
+         };
+         try
+         {
+             proc.Start();
+         }
+         catch
+         {
+             return null;
+         }
+
+         var pipVersion = "";
+         var pythonVersion = "";
+         var pipDir = "";
+         while (!proc.StandardOutput.EndOfStream)
+         {
+             var output = proc.StandardOutput.ReadLine();
+             if (string.IsNullOrWhiteSpace(output)) continue;
+             var sections = output.Split(' ');
+             var pipDirStart = false;
+             for (var i = 0; i < sections.Length; i++)
+             {
+                 if (sections[i] == "from")
+                 {
+                     pipVersion = sections[i - 1];
+                     pipDirStart = true;
+                 }
+                 else if (sections[i] == "(python")
+                 {
+                     pythonVersion = sections[i + 1].Replace(")", "");
+                     break;
+                 }
+                 else if (pipDirStart)
+                 {
+                     pipDir += sections[i] + ' ';
+                 }
+             }
+         }
+         pipVersion = pipVersion.Trim();
+         var pythonPath = FindPythonPathByPipDir(pipDir.Trim());
+         var pythonDirectory = Directory.GetParent(pythonPath)!;
+         var pythonDllName = $"{pythonDirectory.Name.ToLower().Replace(".", "")}.dll";
+         var pythonDllPath = pythonDirectory.GetFiles(pythonDllName, SearchOption.AllDirectories).FirstOrDefault();
+         pythonVersion = pythonVersion.Trim();
+         proc.Close();
+         return pipDir.Length > 0 && pythonDllPath != null ? new EnvironmentModel {
+             Identifier = "",
+             PipVersion = pipVersion,
+             PythonPath = pythonPath,
+             PythonVersion = pythonVersion
+         } : null;
+    }
+    
+    public static string FindPythonPathByPipDir(string pipDir)
+     {
+         // Need more information
+         var pipExePath = Path.Combine(new DirectoryInfo(pipDir).Parent!.Parent!.Parent!.FullName,
+             "python.exe");
+         var pipExePathAttempt1 = Path.Combine(new DirectoryInfo(pipDir).Parent!.Parent!.FullName,
+             "python.exe");
+         if (!File.Exists(pipExePath))
+         {
+             pipExePath = pipExePathAttempt1;
+         }
+
+         return pipExePath;
+     }
 }

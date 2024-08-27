@@ -8,8 +8,10 @@ namespace PipManager.Core.Configuration;
 
 public static class Configuration
 {
-    public static readonly string DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PipManager");
-    public static readonly string ConfigPath = Path.Combine(DataFolder, "config.json");
+    public static string DataFolder { get; private set; } =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PipManager");
+
+    public static string ConfigPath { get; private set; } = Path.Combine(DataFolder, "config.json");
     
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
@@ -19,8 +21,13 @@ public static class Configuration
     
     public static ConfigModel? AppConfig { get; private set; }
 
-    public static void Initialize()
+    public static void Initialize(string dataFolder = "")
     {
+        if (!string.IsNullOrWhiteSpace(dataFolder))
+        {
+            DataFolder = dataFolder;
+            ConfigPath = Path.Combine(DataFolder, "config.json");
+        }
         if (!Directory.Exists(DataFolder))
         {
             Directory.CreateDirectory(DataFolder);
@@ -37,18 +44,39 @@ public static class Configuration
         }
     }
     
+    public static void Reset()
+    {
+        if (!Directory.Exists(DataFolder))
+        {
+            Directory.CreateDirectory(DataFolder);
+        }
+        
+        File.WriteAllText(ConfigPath, JsonSerializer.Serialize(new ConfigModel(), typeof(ConfigModel), SerializerOptions));
+    }
+
+    #region Environment
+
     public static void UpdateSelectedEnvironment()
     {
         if(AppConfig!.SelectedEnvironment == null)
         {
             return;
         }
-        var updatedEnvironment = Detector.ByPythonPath(AppConfig.SelectedEnvironment.PythonPath)!;
-        var currentEnvironmentIndex = AppConfig.Environments.FindIndex(x => x.PythonPath == AppConfig.SelectedEnvironment.PythonPath);
-        AppConfig.Environments[currentEnvironmentIndex] = updatedEnvironment;
-        AppConfig.SelectedEnvironment = updatedEnvironment;
+        AppConfig.SelectedEnvironment = Detector.ByPythonPath(AppConfig.SelectedEnvironment.PythonPath);
         Save();
     }
+    
+    public static void RefreshAllEnvironments()
+    {
+        for (var environmentIndex = 0; environmentIndex < AppConfig!.Environments.Count; environmentIndex++)
+        {
+            AppConfig.Environments[environmentIndex] = Detector.ByPythonPath(AppConfig.Environments[environmentIndex].PythonPath)!;
+        }
+
+        Save();
+    }
+
+    #endregion
     
     public static void Save()
     {
