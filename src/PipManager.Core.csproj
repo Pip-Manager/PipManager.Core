@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
-      <PackageReference Include="System.Text.Json" Version="8.0.4" />
+      <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
+      <PackageReference Include="System.Text.Json" Version="8.0.5" />
     </ItemGroup>
 </Project>
