@@ -8,7 +8,7 @@ namespace PipManager.Core.Configuration;
 
 public static class Configuration
 {
-    public static string DataFolder { get; private set; } =
+    private static string DataFolder { get; set; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PipManager");
 
     public static string ConfigPath { get; private set; } = Path.Combine(DataFolder, "config.json");
@@ -18,10 +18,10 @@ public static class Configuration
         WriteIndented = true,
         TypeInfoResolver = CliConfigModelContext.Default
     };
-    
-    public static ConfigModel? AppConfig { get; private set; }
 
-    public static void Initialize(string dataFolder = "")
+    public static ConfigModel AppConfig { get; private set; } = null!;
+
+    public static bool Initialize(string dataFolder = "")
     {
         if (!string.IsNullOrWhiteSpace(dataFolder))
         {
@@ -37,11 +37,19 @@ public static class Configuration
         {
             AppConfig = new ConfigModel();
             Save();
+            return true;
         }
-        else
+
+        try
         {
-            AppConfig = JsonSerializer.Deserialize(File.ReadAllText(ConfigPath), typeof(ConfigModel), CliConfigModelContext.Default) as ConfigModel;
+            AppConfig = (JsonSerializer.Deserialize(File.ReadAllText(ConfigPath), typeof(ConfigModel), CliConfigModelContext.Default) as ConfigModel)!;
         }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return true;
     }
     
     public static void Reset()
@@ -58,7 +66,7 @@ public static class Configuration
 
     public static void UpdateSelectedEnvironment()
     {
-        if(AppConfig!.SelectedEnvironment == null)
+        if(AppConfig.SelectedEnvironment == null)
         {
             return;
         }
@@ -68,7 +76,7 @@ public static class Configuration
     
     public static void RefreshAllEnvironments()
     {
-        for (var environmentIndex = 0; environmentIndex < AppConfig!.Environments.Count; environmentIndex++)
+        for (var environmentIndex = 0; environmentIndex < AppConfig.Environments.Count; environmentIndex++)
         {
             AppConfig.Environments[environmentIndex] = Detector.ByPythonPath(AppConfig.Environments[environmentIndex].PythonPath)!;
         }
@@ -85,7 +93,7 @@ public static class Configuration
     
     public static readonly ReadOnlyDictionary<string, string> PackageSources = new(new Dictionary<string, string>
     {
-        ["default"] = "https://pypi.org/simple",
+        ["official"] = "https://pypi.org/simple",
         ["tsinghua"] = "https://pypi.tuna.tsinghua.edu.cn/simple",
         ["aliyun"] = "https://mirrors.aliyun.com/pypi/simple",
         ["douban"] = "https://pypi.doubanio.com/simple"
