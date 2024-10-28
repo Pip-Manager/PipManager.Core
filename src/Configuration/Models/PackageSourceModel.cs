@@ -7,7 +7,7 @@ public partial class PackageSourceModelContext : JsonSerializerContext;
 
 public class PackageSourceModel
 {
-    [JsonPropertyName("source")] public string Source { get; set; } = "default";
+    [JsonPropertyName("source")] public string Source { get; set; } = "official";
 
     [JsonPropertyName("allow_non_release")] public bool AllowNonRelease { get; set; }
 }
