@@ -21,7 +21,7 @@ public static class Configuration
 
     public static ConfigModel AppConfig { get; private set; } = null!;
 
-    public static bool Initialize(string dataFolder = "")
+    public static bool Initialize(string dataFolder = "", bool ignoreExists = false)
     {
         if (!string.IsNullOrWhiteSpace(dataFolder))
         {
@@ -33,7 +33,7 @@ public static class Configuration
             Directory.CreateDirectory(DataFolder);
         }
         
-        if (!File.Exists(ConfigPath))
+        if (!File.Exists(ConfigPath) || ignoreExists)
         {
             AppConfig = new ConfigModel();
             Save();
