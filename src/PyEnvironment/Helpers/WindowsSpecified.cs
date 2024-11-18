@@ -81,12 +81,9 @@ public static class WindowsSpecified
          }
          pipVersion = pipVersion.Trim();
          var pythonPath = FindPythonPathByPipDir(pipDir.Trim());
-         var pythonDirectory = Directory.GetParent(pythonPath)!;
-         var pythonDllName = $"{pythonDirectory.Name.ToLower().Replace(".", "")}.dll";
-         var pythonDllPath = pythonDirectory.GetFiles(pythonDllName, SearchOption.AllDirectories).FirstOrDefault();
          pythonVersion = pythonVersion.Trim();
          proc.Close();
-         return pipDir.Length > 0 && pythonDllPath != null ? new EnvironmentModel {
+         return pipDir.Length > 0 ? new EnvironmentModel {
              Identifier = "",
              PipVersion = pipVersion,
              PythonPath = pythonPath,
