@@ -9,7 +9,14 @@ public static class CoreServiceRegisterExtensions
     {
         services.AddTransient(_ =>
         {
-            var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }) { DefaultRequestVersion = HttpVersion.Version20 };
+            var httpClientHandler = new HttpClientHandler
+            {
+                UseCookies = true,
+                CookieContainer = new CookieContainer(),
+                ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+                AutomaticDecompression = DecompressionMethods.All
+            };
+            var client = new HttpClient(httpClientHandler) { DefaultRequestVersion = HttpVersion.Version20 };
             client.DefaultRequestHeaders.Add("User-Agent", $"PipManager/{appVersion}");
             client.Timeout = TimeSpan.FromSeconds(6);
             return client;
